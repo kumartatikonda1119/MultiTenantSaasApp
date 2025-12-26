@@ -56,14 +56,14 @@ function App() {
             element={
               <ProtectedRoute requiredRole={["tenant_admin", "super_admin"]}>
                 <Users />
-                <Route
-                  path="/tenants"
-                  element={
-                    <ProtectedRoute requiredRole={["super_admin"]}>
-                      <Tenants />
-                    </ProtectedRoute>
-                  }
-                />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/tenants"
+            element={
+              <ProtectedRoute requiredRole={["super_admin"]}>
+                <Tenants />
               </ProtectedRoute>
             }
           />
