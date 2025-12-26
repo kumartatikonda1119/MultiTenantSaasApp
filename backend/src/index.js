@@ -54,6 +54,13 @@ app.use(express.static(frontendBuildPath));
 
 // Serve React app for any non-API route (enables client-side routing)
 app.get("*", (req, res) => {
+  // Don't serve HTML for API routes
+  if (req.path.startsWith("/api/")) {
+    return res.status(404).json({
+      success: false,
+      message: "API route not found",
+    });
+  }
   res.sendFile(path.join(frontendBuildPath, "index.html"));
 });
 
