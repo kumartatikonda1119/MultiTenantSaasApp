@@ -2,6 +2,7 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const morgan = require("morgan");
+const path = require("path");
 const pool = require("./config/database");
 const { initializeDatabase } = require("./config/migrations");
 
@@ -23,6 +24,10 @@ app.use(
 );
 app.use(express.json());
 app.use(morgan("combined"));
+
+// Serve static frontend files (for single service deployment)
+const frontendBuildPath = path.join(__dirname, "../../frontend/build");
+app.use(express.static(frontendBuildPath));
 
 // Health check endpoint
 app.get("/api/health", async (req, res) => {
@@ -46,6 +51,11 @@ app.use("/api/tenants", tenantRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/projects", projectRoutes);
 app.use("/api/tasks", taskRoutes);
+
+// Serve React app for any non-API route (enables client-side routing)
+app.get("*", (req, res) => {
+  res.sendFile(path.join(frontendBuildPath, "index.html"));
+});
 
 // 404 handler
 app.use((req, res) => {
