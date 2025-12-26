@@ -46,7 +46,7 @@ const Tenants = () => {
       if (filters.subscriptionPlan)
         params.append("subscriptionPlan", filters.subscriptionPlan);
 
-      const url = `/api/tenants?${params}`;
+const url = `/tenants?${params}`;
       console.log("Fetching tenants from:", url);
 
       const response = await api.get(url);
@@ -86,7 +86,7 @@ const Tenants = () => {
         updateData.maxProjects = parseInt(updateFormData.maxProjects);
 
       const response = await api.put(
-        `/api/tenants/${selectedTenant.id}`,
+        `/tenants/${selectedTenant.id}`,
         updateData
       );
 
