@@ -46,18 +46,24 @@ const Tenants = () => {
       if (filters.subscriptionPlan)
         params.append("subscriptionPlan", filters.subscriptionPlan);
 
-      const response = await api.get(`/api/tenants?${params}`);
+      const url = `/api/tenants?${params}`;
+      console.log("Fetching tenants from:", url);
+
+      const response = await api.get(url);
+
+      console.log("Tenants response:", response.data);
 
       if (response.data.success) {
         setTenants(response.data.data.tenants);
         setPagination(response.data.data.pagination);
       }
     } catch (err) {
-      setError(
+      const errorMsg =
         err.response?.data?.message ||
-          "Failed to fetch tenants. Make sure you're logged in as super_admin."
-      );
+        "Failed to fetch tenants. Make sure you're logged in as super_admin.";
+      setError(errorMsg);
       console.error("Error fetching tenants:", err);
+      console.error("Error details:", err.response?.data);
     } finally {
       setLoading(false);
     }
