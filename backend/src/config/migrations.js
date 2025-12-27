@@ -55,7 +55,7 @@ async function initializeDatabase() {
         retries++;
         if (retries < 10) {
           console.log(`Connection attempt ${retries}/10 failed, retrying...`);
-          await new Promise(resolve => setTimeout(resolve, 2000));
+          await new Promise((resolve) => setTimeout(resolve, 2000));
         } else {
           throw err;
         }
