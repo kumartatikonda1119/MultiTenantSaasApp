@@ -4,6 +4,7 @@ services:
   database:
     image: postgres:15-alpine
     container_name: saas-database
+    restart: unless-stopped
     environment:
       POSTGRES_DB: saas_db
       POSTGRES_USER: postgres
@@ -25,6 +26,7 @@ services:
       context: ./backend
       dockerfile: Dockerfile
     container_name: saas-backend
+    restart: unless-stopped
     environment:
       DB_HOST: database
       DB_PORT: 5432
@@ -48,12 +50,15 @@ services:
       retries: 5
     networks:
       - saas-network
+    profiles:
+      - backend
 
   frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile
     container_name: saas-frontend
+    restart: unless-stopped
     environment:
       REACT_APP_API_URL: http://localhost:5000/api
     ports:
@@ -75,6 +80,8 @@ services:
       retries: 5
     networks:
       - saas-network
+    profiles:
+      - frontend
 
 volumes:
   postgres_data:

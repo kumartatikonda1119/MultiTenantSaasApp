@@ -44,9 +44,23 @@ async function loadSeedData() {
 
 async function initializeDatabase() {
   try {
-    // Test connection
-    const result = await pool.query("SELECT NOW()");
-    console.log("Database connection successful");
+    // Test connection with retry
+    let retries = 0;
+    while (retries < 10) {
+      try {
+        const result = await pool.query("SELECT NOW()");
+        console.log("Database connection successful");
+        break;
+      } catch (err) {
+        retries++;
+        if (retries < 10) {
+          console.log(`Connection attempt ${retries}/10 failed, retrying...`);
+          await new Promise(resolve => setTimeout(resolve, 2000));
+        } else {
+          throw err;
+        }
+      }
+    }
 
     // Run migrations
     await runMigrations();
