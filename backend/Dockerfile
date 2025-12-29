@@ -3,14 +3,21 @@ FROM node:18-alpine
 
 WORKDIR /app
 
-# Copy package files
-COPY package*.json ./
+# Copy backend package files
+COPY backend/package*.json ./
 
-# Install dependencies
+# Install backend dependencies
 RUN npm install
 
-# Copy application files
-COPY . .
+# Copy frontend and build it
+COPY frontend ./frontend
+WORKDIR /app/frontend
+RUN npm install
+RUN npm run build
+WORKDIR /app
+
+# Copy backend application files
+COPY backend .
 
 # Expose port
 EXPOSE 5000

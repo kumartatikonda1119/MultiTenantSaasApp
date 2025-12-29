@@ -49,7 +49,7 @@ app.use("/api/projects", projectRoutes);
 app.use("/api/tasks", taskRoutes);
 
 // Serve static frontend files (AFTER API routes to prevent conflicts)
-const frontendBuildPath = path.join(__dirname, "../../frontend/build");
+const frontendBuildPath = path.join(__dirname, "../frontend/build");
 app.use(express.static(frontendBuildPath));
 
 // Serve React app for any non-API route (enables client-side routing)
