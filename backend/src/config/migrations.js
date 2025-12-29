@@ -17,7 +17,27 @@ async function runMigrations() {
       const sql = fs.readFileSync(filePath, "utf8");
 
       console.log(`Running migration: ${file}`);
-      await pool.query(sql);
+
+      // Split SQL by semicolons and execute each statement
+      const statements = sql
+        .split(";")
+        .map((stmt) => stmt.trim())
+        .filter((stmt) => stmt.length > 0);
+
+      console.log(`  Found ${statements.length} SQL statements in ${file}`);
+
+      for (let i = 0; i < statements.length; i++) {
+        const stmt = statements[i];
+        try {
+          console.log(`  Executing statement ${i + 1}/${statements.length}...`);
+          await pool.query(stmt);
+          console.log(`  ✓ Statement ${i + 1} completed`);
+        } catch (error) {
+          console.error(`  ✗ Statement ${i + 1} failed:`, error.message);
+          throw error;
+        }
+      }
+
       console.log(`✓ Migration ${file} completed`);
     }
 
@@ -34,7 +54,17 @@ async function loadSeedData() {
 
   try {
     const sql = fs.readFileSync(seedFile, "utf8");
-    await pool.query(sql);
+
+    // Split SQL by semicolons and execute each statement
+    const statements = sql
+      .split(";")
+      .map((stmt) => stmt.trim())
+      .filter((stmt) => stmt.length > 0);
+
+    for (const statement of statements) {
+      await pool.query(statement);
+    }
+
     console.log("✓ Seed data loaded successfully");
   } catch (error) {
     console.error("Seed data loading failed:", error);
